@@ -1,6 +1,6 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
 import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js';
-import {OrbitControls} from 'https://cdn.skypack.dev/pin/three@v0.134.0-mlfrkS6HEbKKwwCDDo6H/mode=imports/unoptimized/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'https://cdn.skypack.dev/pin/three@v0.134.0-mlfrkS6HEbKKwwCDDo6H/mode=imports/unoptimized/examples/jsm/controls/OrbitControls.js'
 
 const initial = {
   plane: {
@@ -20,21 +20,16 @@ const initial = {
   attributes: {
     speed: 1,
     amplitude: 1,
-    
+
   }
 
 }
 
-//Material with variables controlled by GUI
-let planematerial = new THREE.MeshPhongMaterial({
-  color:0xffff00, // Main color of the plane
-  side: THREE.DoubleSide, //Render both sides
-});
 
 function main() {
   const canvas = document.querySelector('#c');
   const renderer = new THREE.WebGLRenderer({ canvas });
-  document.body.appendChild( renderer.domElement );
+  document.body.appendChild(renderer.domElement);
 
   const camera = new THREE.PerspectiveCamera(
     initial.frustum.fov,
@@ -44,29 +39,31 @@ function main() {
   );
   camera.position.z = 2;
 
-  const controls = new OrbitControls( camera, renderer.domElement );
+  const controls = new OrbitControls(camera, renderer.domElement);
 
   const scene = new THREE.Scene();
-
-  // const cubes = [];  // just an array we can use to rotate the cubes
-  // const loader = new THREE.TextureLoader();
-  // const texture = loader.load('https://threejs.org/manual/examples/resources/images/wall.jpg');
-  // const material = new THREE.MeshBasicMaterial({
-  //   map: texture,
-  // });
 
   const geometry = new THREE.PlaneGeometry(initial.plane.height, initial.plane.width, initial.plane.heightSegments, initial.plane.widthSegments);
   const wireframe = new THREE.WireframeGeometry(geometry);
   const line = new THREE.LineSegments(wireframe);
 
-  const material = new THREE.MeshBasicMaterial({ color: 0xffff00});
-  let planemesh = new THREE.Mesh(geometry, material);
+  //Material with variables controlled by GUI
+  let planematerial = new THREE.MeshPhongMaterial({
+    color: 0x80ee10,
+					shininess: 100,
+					side: THREE.DoubleSide,
+
+					// ***** Clipping setup (material): *****
+					clipShadows: true
+  });
+  const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+  let planemesh = new THREE.Mesh(geometry, planematerial);
 
   line.material.depthTest = false;
   line.material.opacity = 0.25;
   line.material.transparent = true;
 
-  planemesh.rotateX(-1); 
+  planemesh.rotateX(-1);
   planemesh.rotateZ(0.7);
 
   scene.add(planemesh);
@@ -79,6 +76,35 @@ function main() {
   planemesh.geometry.attributes.position.randomValues = randomValues
   planemesh.geometry.attributes.position.originalpos = planemesh.geometry.attributes.position.array
 
+
+  // Lights
+  scene.add( new THREE.AmbientLight( 0x505050 ) );
+
+  const spotLight = new THREE.SpotLight( 0xffffff );
+  spotLight.angle = Math.PI / 5;
+  spotLight.penumbra = 0.2;
+  spotLight.position.set( 2, 3, 3 );
+  spotLight.castShadow = true;
+  spotLight.shadow.camera.near = 3;
+  spotLight.shadow.camera.far = 10;
+  spotLight.shadow.mapSize.width = 1024;
+  spotLight.shadow.mapSize.height = 1024;
+  scene.add( spotLight );
+
+  // const dirLight = new THREE.DirectionalLight( 0x55505a, 1 );
+  // dirLight.position.set( 0, 3, 0 );
+  // dirLight.castShadow = true;
+  // dirLight.shadow.camera.near = 1;
+  // dirLight.shadow.camera.far = 10;
+
+  // dirLight.shadow.camera.right = 1;
+  // dirLight.shadow.camera.left = - 1;
+  // dirLight.shadow.camera.top	= 1;
+  // dirLight.shadow.camera.bottom = - 1;
+
+  // dirLight.shadow.mapSize.width = 1024;
+  // dirLight.shadow.mapSize.height = 1024;
+  // scene.add( dirLight );
 
   //cubes.push(planeGeometry);
 
@@ -127,7 +153,7 @@ function main() {
   gui.add(initial.plane, 'heightSegments', 0, 10, 0.1).name('heigthS');
   gui.add(initial.attributes, 'speed', 0.1, 10, 0.01).name('speed');
   gui.add(initial.attributes, 'amplitude', 0.1, 2, 0.01).name('amplitude');
-  
+
   //gui.add(line.wSegments ,'widthSegment', 1, 20, 1).name('hs');
 
   console.log(planemesh);
@@ -136,7 +162,7 @@ function main() {
   /////////Rendering/////////
   ///////////////////////////
 
-  
+
 
   function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
@@ -158,7 +184,7 @@ function main() {
 
     // Moving vertices in Z-direction
     for (let index = 0; index < planemesh.geometry.attributes.position.count; index++) {
-      planemesh.geometry.attributes.position.setZ(index, (initial.attributes.amplitude * randomValues[index] * Math.sin(frame*initial.attributes.speed)/5))
+      planemesh.geometry.attributes.position.setZ(index, (initial.attributes.amplitude * randomValues[index] * Math.sin(frame * initial.attributes.speed) / 5))
 
     }
     controls.update();
