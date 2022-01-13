@@ -1,5 +1,5 @@
 # Öppet vatten
-Projekt i kursen TNM084
+Projekt i kursen *TNM084*
 
 Kort beskrivning:
 Jag tänker göra vatten i webGL med three.js.
