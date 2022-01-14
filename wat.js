@@ -42,6 +42,7 @@ function main() {
   const controls = new OrbitControls(camera, renderer.domElement);
 
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color( 0x59595959 );
 
   const geometry = new THREE.PlaneGeometry(initial.plane.height, initial.plane.width, initial.plane.heightSegments, initial.plane.widthSegments);
   const wireframe = new THREE.WireframeGeometry(geometry);
@@ -49,19 +50,18 @@ function main() {
 
   //Material with variables controlled by GUI
   let planematerial = new THREE.MeshPhongMaterial({
-    color: 0x80ee10,
-					shininess: 100,
-					side: THREE.DoubleSide,
-
-					// ***** Clipping setup (material): *****
-					clipShadows: true
+    color: 0x4287f5,
+    shininess: 50,
+    opacity: 1,
+    flatShading: true,
+    //side: THREE.DoubleSide,
   });
-  const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-  let planemesh = new THREE.Mesh(geometry, planematerial);
 
-  line.material.depthTest = false;
-  line.material.opacity = 0.25;
-  line.material.transparent = true;
+  // let planematerial = new THREE.MeshPhongMaterial({
+  //   color: 0xffffff, flatShading: true, vertexColors: true, shininess: 0
+  // });
+
+  const planemesh = new THREE.Mesh(geometry, planematerial);
 
   planemesh.rotateX(-1);
   planemesh.rotateZ(0.7);
@@ -76,37 +76,9 @@ function main() {
   planemesh.geometry.attributes.position.randomValues = randomValues
   planemesh.geometry.attributes.position.originalpos = planemesh.geometry.attributes.position.array
 
-
-  // Lights
-  scene.add( new THREE.AmbientLight( 0x505050 ) );
-
-  const spotLight = new THREE.SpotLight( 0xffffff );
-  spotLight.angle = Math.PI / 5;
-  spotLight.penumbra = 0.2;
-  spotLight.position.set( 2, 3, 3 );
-  spotLight.castShadow = true;
-  spotLight.shadow.camera.near = 3;
-  spotLight.shadow.camera.far = 10;
-  spotLight.shadow.mapSize.width = 1024;
-  spotLight.shadow.mapSize.height = 1024;
-  scene.add( spotLight );
-
-  // const dirLight = new THREE.DirectionalLight( 0x55505a, 1 );
-  // dirLight.position.set( 0, 3, 0 );
-  // dirLight.castShadow = true;
-  // dirLight.shadow.camera.near = 1;
-  // dirLight.shadow.camera.far = 10;
-
-  // dirLight.shadow.camera.right = 1;
-  // dirLight.shadow.camera.left = - 1;
-  // dirLight.shadow.camera.top	= 1;
-  // dirLight.shadow.camera.bottom = - 1;
-
-  // dirLight.shadow.mapSize.width = 1024;
-  // dirLight.shadow.mapSize.height = 1024;
-  // scene.add( dirLight );
-
-  //cubes.push(planeGeometry);
+  const light = new THREE.SpotLight(0xffffff, 1.5);
+  light.position.set(0, 500, 2000);
+  scene.add(light);
 
   //////////////////////////////////
   /////////Helper functions/////////
