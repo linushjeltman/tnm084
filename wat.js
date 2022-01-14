@@ -23,6 +23,7 @@ const initial = {
 
   attributes: {
     speed: 1,
+    speed2: 1,
     amplitude: 0.1,
   }
 }
@@ -126,6 +127,7 @@ function main() {
   gui.add(planemesh.scale, 'x', 0, 10, 0.1).name('width');
   gui.add(planemesh.scale, 'y', 0, 10, 0.1).name('height');
   gui.add(initial.attributes, 'speed', 0.1, 10, 0.01).name('speed');
+  gui.add(initial.attributes, 'speed2', 0.1, 10, 0.01).name('speed2');
   gui.add(initial.attributes, 'amplitude', 0.001, 1, 0.01).name('amplitude');
 
   console.log(planemesh);
@@ -146,24 +148,25 @@ function main() {
   }
 
   let frame = 0;
-
+ 
   function render() {
+    let { array, originalpos, randomValues, count } = planemesh.geometry.attributes.position
+    let { amplitude, speed, speed2 } = initial.attributes;
     frame += 0.01;
-    let { array, originalpos, randomValues } = planemesh.geometry.attributes.position
     // Moving vertices in Z-direction
-    for (let index = 0; index < planemesh.geometry.attributes.position.count; index++) {
-      planemesh.geometry.attributes.position.setZ(index, (initial.attributes.amplitude * randomValues[index] * Math.sin(frame * initial.attributes.speed) / 5))
+    //Math.sin(frame*Math.PI/180)/10+
+    for (let index = 0; index < count; index++) {
+      planemesh.geometry.attributes.position.setZ(index, (amplitude * randomValues[index] * Math.sin(frame * speed) / 5));
     }
 
-    // TODO: Fix movement, apply sine to already moving plane.
-    // let i = 0, j = 0;
-    // 		for ( let ix = 0; ix < 100; ix ++ ) {
-    // 			for ( let iy = 0; iy < 100; iy ++ ) {
-    // 				array[ i + 1 ] = ( Math.sin( ( ix + frame /100) * 0.03 )  ) +
-    // 								( Math.sin( ( iy + frame /100) * 0.05 )  );
-    // 				i += 3;
-    // 			}
-    // 		}
+    let i = 0, j = 0;
+    for ( let ix = 0; ix < Math.sqrt(count); ix ++ ) {
+      for ( let iy = 0; iy < Math.sqrt(count); iy ++ ) {
+        array[i + 2] += ( Math.sin( ( ix + frame * speed2 ) * 0.6 )/100 ) + 
+        ( Math.sin( ( iy + frame * speed2 ) * 0.4 )/100 );
+        i += 3;
+      }
+    }
 
     controls.update();
     planemesh.geometry.attributes.position.needsUpdate = true // Mandatory, otherwise operations on vertices wont show.
