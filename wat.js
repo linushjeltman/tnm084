@@ -2,6 +2,10 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import { GUI } from 'https://threejs.org/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'https://cdn.skypack.dev/pin/three@v0.134.0-mlfrkS6HEbKKwwCDDo6H/mode=imports/unoptimized/examples/jsm/controls/OrbitControls.js'
 
+///////////////////
+////INIT VALUES////
+///////////////////
+
 const initial = {
   plane: {
     width: 2,
@@ -12,7 +16,7 @@ const initial = {
 
   frustum: {
     fov: 75,
-    aspect: 2, 
+    aspect: 2,
     near: 0.1,
     far: 50,
   },
@@ -24,6 +28,10 @@ const initial = {
 }
 
 function main() {
+  ///////////////////////
+  ////CANVAS & CAMERA////
+  ///////////////////////
+
   const canvas = document.querySelector('#c');
   const renderer = new THREE.WebGLRenderer({ canvas });
   document.body.appendChild(renderer.domElement);
@@ -39,7 +47,11 @@ function main() {
   const controls = new OrbitControls(camera, renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0x59595959 );
+  scene.background = new THREE.Color(0x59595959);
+
+  ///////////////////////////
+  ////GEOMETRY & MATERIAL////
+  ///////////////////////////
 
   const geometry = new THREE.PlaneGeometry(initial.plane.height, initial.plane.width, initial.plane.heightSegments, initial.plane.widthSegments);
 
@@ -66,6 +78,10 @@ function main() {
   }
   planemesh.geometry.attributes.position.randomValues = randomValues
   planemesh.geometry.attributes.position.originalpos = planemesh.geometry.attributes.position.array
+
+  ////////////////////////
+  /////////LIGHTS/////////
+  ////////////////////////
 
   const light = new THREE.SpotLight(0xffffff, 1.5);
   light.position.set(0, 500, 2000);
@@ -102,9 +118,6 @@ function main() {
       }
     }
   }
-  function updateTexture() {
-    texture.needsUpdate = true;
-  }
 
   /////////////////////
   /////////GUI/////////
@@ -114,8 +127,6 @@ function main() {
   gui.add(planemesh.scale, 'y', 0, 10, 0.1).name('height');
   gui.add(initial.attributes, 'speed', 0.1, 10, 0.01).name('speed');
   gui.add(initial.attributes, 'amplitude', 0.001, 1, 0.01).name('amplitude');
-
-  //gui.add(line.wSegments ,'widthSegment', 1, 20, 1).name('hs');
 
   console.log(planemesh);
 
@@ -137,7 +148,6 @@ function main() {
   let frame = 0;
 
   function render() {
-
     frame += 0.01;
     let { array, originalpos, randomValues } = planemesh.geometry.attributes.position
     // Moving vertices in Z-direction
@@ -145,33 +155,27 @@ function main() {
       planemesh.geometry.attributes.position.setZ(index, (initial.attributes.amplitude * randomValues[index] * Math.sin(frame * initial.attributes.speed) / 5))
     }
 
+    // TODO: Fix movement, apply sine to already moving plane.
     // let i = 0, j = 0;
+    // 		for ( let ix = 0; ix < 100; ix ++ ) {
+    // 			for ( let iy = 0; iy < 100; iy ++ ) {
+    // 				array[ i + 1 ] = ( Math.sin( ( ix + frame /100) * 0.03 )  ) +
+    // 								( Math.sin( ( iy + frame /100) * 0.05 )  );
+    // 				i += 3;
+    // 			}
+    // 		}
 
-		// 		for ( let ix = 0; ix < 100; ix ++ ) {
-
-		// 			for ( let iy = 0; iy < 100; iy ++ ) {
-
-		// 				array[ i + 1 ] = ( Math.sin( ( ix + frame /100) * 0.03 )  ) +
-		// 								( Math.sin( ( iy + frame /100) * 0.05 )  );
-		// 				i += 3;
-						
-
-		// 			}
-
-		// 		}
     controls.update();
-    planemesh.geometry.attributes.position.needsUpdate = true
+    planemesh.geometry.attributes.position.needsUpdate = true // Mandatory, otherwise operations on vertices wont show.
 
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
       camera.updateProjectionMatrix();
     }
-
     renderer.render(scene, camera);
     requestAnimationFrame(render);
   }
-
   requestAnimationFrame(render);
 }
 
