@@ -7,13 +7,13 @@ Man ska kunna interagera med modellen.
 
 Will do:
 
-Två olika brusmetoder:
+Olika brusmetoder som man ska kunna byta emellan:
 * modifierad sinus (som visats på föreläsning) ✅
 * perlin 
+* Hash som Stefan Gustavsson föreslår ✅
 
-som man ska kunna byta emellan.
-
-* Man ska kunna ändra amplituden på vågorna.
+Andra saker:
+* Man ska kunna ändra amplituden på vågorna ✅
 
 Might do:
 * Använda sig av Fourier transform för att göra vattnet
