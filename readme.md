@@ -9,7 +9,7 @@ Will do:
 
 Olika brusmetoder som man ska kunna byta emellan:
 * modifierad sinus (som visats på föreläsning) ✅
-* perlin 
+* perlin ✅ 
 * Hash som Stefan Gustavsson föreslår ✅
 
 Andra saker:
