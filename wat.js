@@ -190,11 +190,10 @@ function main() {
   }
 
   let frame = 0, mods = 0, hashed = 0, perlin = 0;
-  let { array, count } = planemesh.geometry.attributes.position // Access to verticies 
-  let { amplitude, amplitude1, amplitude2, noisescale, speed, speed2, hashenabled, modsineenabled, perlinenabled } = initial.attributes; // Acess to values that are being modified by GUI
-  let { hash, modSine, perlinNoise } = initial.noise; // Accessing noise-functions
-
   function render() {
+    let { array, count } = planemesh.geometry.attributes.position // Access to verticies 
+    let { amplitude, amplitude1, amplitude2, noisescale, speed, speed2, hashenabled, modsineenabled, perlinenabled } = initial.attributes; // Acess to values that are being modified by GUI
+    let { hash, modSine, perlinNoise } = initial.noise; // Accessing noise-functions
     frame += 0.01; // This is used to make things move
     let i = 0;
     for (let ix = 0; ix < Math.sqrt(count); ix++) {
