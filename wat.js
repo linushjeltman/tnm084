@@ -198,13 +198,14 @@ function main() {
     let i = 0;
     for (let ix = 0; ix < Math.sqrt(count); ix++) {
       for (let iy = 0; iy < Math.sqrt(count); iy++) {
-        mods = (modsineenabled === true ? modSine(iy * ix) : 1); // Ternary operators that enables the noise functions when radiobutton is pressed
-        hashed = (hashenabled === true ? hash(hash(iy) + ix) * noisescale / 100 : 1);
-        perlin = (perlinenabled === true ? perlinNoise(hash(hash(iy) + ix) * noisescale / 100) * 100: 1);
+        mods = (modsineenabled === true ? modSine(iy * ix) : 0); // Ternary operators that enables the noise functions when radiobutton is pressed
+        hashed = (hashenabled === true ? hash(hash(iy) + ix) * noisescale / 100 : 0);
+        perlin = (perlinenabled === true ? perlinNoise(hash(hash(iy) + ix) * noisescale / 100) * 100: 0);
 
         array[i + 2] = amplitude * (
-          (amplitude1 * Math.sin(frame * speed / 10 * (mods + hashed + perlin )) *
-            amplitude2 * Math.sin((frame * speed2 / 10 * (mods + hashed + perlin))))); // Only modify the z-component
+          (amplitude1 * Math.sin(frame * speed / 10 * (mods + hashed + perlin )) +
+          amplitude2 * Math.sin((frame * speed2 / 10 * (mods + hashed + perlin))))); // Only modify the z-component
+          
         i += 3;
         // x = i
         // y = i + 1
